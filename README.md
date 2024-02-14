@@ -17,7 +17,7 @@ vagrant plugin install vagrant-vbguest --plugin-version 0.21
 | ```vagrant up``` | starts and provisions the vagrant environment|
 | ```vagrant status``` | outputs status of the vagrant machine |
 | ```vagrant ssh``` | connects to machine via SSH |
-| ```vagrant reload --provision```| |
+| ```vagrant reload --provision```| enable provisioning|
 |||
 | ```ansible -m ping all``` | |
 
