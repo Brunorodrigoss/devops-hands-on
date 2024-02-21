@@ -3,3 +3,5 @@
 cat << EOT >> /home/vagrant/.ssh/authorized_keys
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCr9WD55ffO996P9N1YDoazuj5yEX4aHQzn5rfvN68EvUkjSWAZmHKdggSg39jXPLG1xq1cwgE6RjaY36q2EH77X8KRjbdUnYAQowzOapsWKf+OW+WTMjH0HRUH+HQRzq3uAfYFFvcc5LlOYoW96Eokt2EUyWkXIEuay4tJI8/bmGd3/GOAsfk5dyevua2O9SHX9+KMslQcuFFMRczvbK/pmYmLCnnsCC7aEbSeubtXn3LEQSVbaWKOjZspzStm8ijT6wl0+L5096gRy7P8dxblGxmzHUZNjEcKNGKEfgjyMa5cLKWDLmQG08ILzmSShwV+ZaFLBWrTxnRPYTXVO5wz
 EOT
+
+ansible-galaxy role install geerlingguy.mysql
