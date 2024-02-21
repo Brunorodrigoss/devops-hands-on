@@ -22,6 +22,8 @@ vagrant plugin install vagrant-vbguest --plugin-version 0.21
 | ```vagrant resume```| resume a suspended vagrant machine|
 |||
 | ```ansible -m ping all``` | |
+| ```ansible-playbook playbook-name-here.yml``` | runs Ansible playbook, executing the defined tasks on the targeted hosts |
+| ```ansible-playbook playbook-name-here.yml --check``` | (Dry run) don't make any changes; instead, try to predict some of the changes that may occur |
 |||
 | ```ssh-keygen``` | generate public/private rsa ssh-keygen |
 
