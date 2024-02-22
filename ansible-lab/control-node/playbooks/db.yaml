@@ -12,17 +12,6 @@
     dbname: "db01"
     dbusername: "root"
     dbpassword: "db01password"
-  
-  tasks:
-    - name: Configure hosts (lab)
-      lineinfile: 
-        dest: /etc/hosts
-        state: present
-        line: "{{item}}"
-      with_items: 
-        - 192.168.2.10 control-node
-        - 192.168.2.11 app01
-        - 192.168.2.12 db01
 
   roles:
     - default-os-config

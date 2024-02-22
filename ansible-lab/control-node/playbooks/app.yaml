@@ -12,48 +12,38 @@
     dbpassword: "notesapppassword"
 
   tasks:
-    - name: Configure hosts (lab)
-      lineinfile: 
-        dest: /etc/hosts
-        state: present
-        line: "{{item}}"
-      with_items: 
-        - 192.168.2.10 control-node
-        - 192.168.2.11 app01
-        - 192.168.2.12 db01
-
     - name: Add app's user
       user:
         name: app
         comment: User application
         uid: 500
 
-    # - name: Maven installation
-    #   yum:
-    #     name: maven
-    #     state: latest
+    - name: Maven installation
+      yum:
+        name: maven
+        state: latest
 
-    - name: Maven download
-      get_url: 
-        url: https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.1.0/apache-maven-3.1.0-bin.tar.gz
-        dest: /opt/apache-maven-3.1.0-bin.tar.gz
+    # - name: Maven download
+    #   get_url: 
+    #     url: https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.1.0/apache-maven-3.1.0-bin.tar.gz
+    #     dest: /opt/apache-maven-3.1.0-bin.tar.gz
 
-    - name: Unzip Maven
-      ansible.builtin.unarchive:
-        src: /opt/apache-maven-3.1.0-bin.tar.gz
-        dest: /opt/
-        remote_src: yes
+    # - name: Unzip Maven
+    #   ansible.builtin.unarchive:
+    #     src: /opt/apache-maven-3.1.0-bin.tar.gz
+    #     dest: /opt/
+    #     remote_src: yes
 
-    - name: Modify Maven permissions
-      shell: chmod a+x /opt/apache-maven-3.1.0/bin/mvn
+    # - name: Modify Maven permissions
+    #   shell: chmod a+x /opt/apache-maven-3.1.0/bin/mvn
 
     - name: Java installation
       yum:
         name: java-1.8.0-openjdk
         state: latest
     
-    - name: JAVA_HOME
-      shell: export JAVA_HOME=java-1.8.0-openjdk-1.8.0.402.b06-1.el7_9.x86_64/jre/bin/
+    # - name: JAVA_HOME
+    #   shell: export JAVA_HOME=java-1.8.0-openjdk-1.8.0.402.b06-1.el7_9.x86_64/jre/bin/
 
     - name: Application directory creation
       file:
@@ -74,10 +64,10 @@
         clone: yes
         force: yes
 
-    - name: Update pom.xml
-      template:
-        src: pom.xml
-        dest: /opt/notes/pom.xml
+    # - name: Update pom.xml
+    #   template:
+    #     src: pom.xml
+    #     dest: /opt/notes/pom.xml
 
     - name: Configure properties file to database layer
       template:
