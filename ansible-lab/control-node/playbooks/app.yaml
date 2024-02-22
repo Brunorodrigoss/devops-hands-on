@@ -1,0 +1,120 @@
+---
+- name: Configure Java server application
+  hosts: app01
+
+  user: vagrant
+  become: true
+
+  vars:
+    dbhost: "db01"
+    dbname: "notes"
+    dbusername: "notesapp"
+    dbpassword: "notesapppassword"
+
+  tasks:
+    - name: Configure hosts (lab)
+      lineinfile: 
+        dest: /etc/hosts
+        state: present
+        line: "{{item}}"
+      with_items: 
+        - 192.168.2.10 control-node
+        - 192.168.2.11 app01
+        - 192.168.2.12 db01
+
+    - name: Add app's user
+      user:
+        name: app
+        comment: User application
+        uid: 500
+
+    # - name: Maven installation
+    #   yum:
+    #     name: maven
+    #     state: latest
+
+    - name: Maven download
+      get_url: 
+        url: https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/3.1.0/apache-maven-3.1.0-bin.tar.gz
+        dest: /opt/apache-maven-3.1.0-bin.tar.gz
+
+    - name: Unzip Maven
+      ansible.builtin.unarchive:
+        src: /opt/apache-maven-3.1.0-bin.tar.gz
+        dest: /opt/
+        remote_src: yes
+
+    - name: Modify Maven permissions
+      shell: chmod a+x /opt/apache-maven-3.1.0/bin/mvn
+
+    - name: Java installation
+      yum:
+        name: java-1.8.0-openjdk
+        state: latest
+    
+    - name: JAVA_HOME
+      shell: export JAVA_HOME=java-1.8.0-openjdk-1.8.0.402.b06-1.el7_9.x86_64/jre/bin/
+
+    - name: Application directory creation
+      file:
+        path: /opt/notes
+        state: directory
+        owner: app
+        group: app
+
+    - name: Git client installation
+      yum:
+        name: git
+        state: latest
+
+    - name: Clone app repository
+      git:
+        repo: 'https://github.com/callicoder/spring-boot-mysql-rest-api-tutorial.git'
+        dest: /opt/notes
+        clone: yes
+        force: yes
+
+    - name: Update pom.xml
+      template:
+        src: pom.xml
+        dest: /opt/notes/pom.xml
+
+    - name: Configure properties file to database layer
+      template:
+        src: application.properties
+        dest: /opt/notes/src/main/resources/application.properties
+
+    - name: Generate App package
+      command: /opt/apache-maven-3.1.0/bin/mvn -f /opt/notes/pom.xml package
+      become_user: app
+
+    - name: Register current package version
+      shell:
+        cmd: /opt/apache-maven-3.1.0/bin/mvn -o -q -Dexec.executable=echo -Dexec.args='${project.version}'
+        chdir: /opt/notes/
+      register: app_version
+
+    - name: Configure Systemd service
+      template:
+        src: etc/systemd/system/notes.service
+        dest: /etc/systemd/system/notes.service
+        notify: reload daemon
+
+    - name: Start Notes service
+      service:
+        name: notes
+        state: restarted
+
+  roles:
+    - default-os-config
+
+  handlers:
+    - name: reload app
+      systemd:
+        name: 'notes'
+        state: restarted
+        daemon_reload: yes
+
+    - name: reload daemon
+      systemd:
+        daemon_reexec: yes
