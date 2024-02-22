@@ -17,3 +17,5 @@ app01
 [dbs]
 db01
 EOT
+
+ansible-galaxy role install geerlingguy.mysql
